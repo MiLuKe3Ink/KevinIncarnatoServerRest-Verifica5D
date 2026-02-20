@@ -50,8 +50,8 @@ public class ServerRest {
             System.out.println("Porta: " + porta);
             System.out.println();
             System.out.println("Endpoint disponibili:");
-            System.out.println("  - POST: http://localhost:" + porta + "/DA FARE");
-            System.out.println("  - GET:  http://localhost:" + porta + "/DA FARE");
+            System.out.println("  - POST: http://localhost:" + porta + "/api/roulette/paridispari/post");
+            System.out.println("  - GET:  http://localhost:" + porta + "/api/roulette/paridispari/get");
             System.out.println("  - Info: http://localhost:" + porta + "/");
             System.out.println();
             System.out.println();
@@ -79,16 +79,10 @@ public class ServerRest {
         info.put("tecnologia", "Java + GSON");
         
         Map endpoints = new HashMap<>();
-        endpoints.put("POST", "/api/calcola/post");
-        endpoints.put("GET", "/api/calcola/get?operando1=X&operando2=Y&operatore=OP");
+        endpoints.put("POST", "/api/paridispar/post");
+        endpoints.put("GET", "/api/paridispar/get?giocata=X&numero=Y");
         info.put("endpoints", endpoints);
         
-        Map operatori = new HashMap<>();
-        operatori.put("somma", "SOMMA o +");
-        operatori.put("sottrazione", "SOTTRAZIONE o -");
-        operatori.put("moltiplicazione", "MOLTIPLICAZIONE o * o X");
-        operatori.put("divisione", "DIVISIONE o /");
-        info.put("operatori_supportati", operatori);
         
         String jsonRisposta = gson.toJson(info);
         

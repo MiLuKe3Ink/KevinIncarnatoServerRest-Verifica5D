@@ -17,7 +17,7 @@ public class App {
      */
     public static void main(String[] args) {
         // Configurazione porta DA FARE
-        int porta = 0;
+        int porta = 8080;
         if (args.length > 0) {
             try {
                 porta = Integer.parseInt(args[0]);
