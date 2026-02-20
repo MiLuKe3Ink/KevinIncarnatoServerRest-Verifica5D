@@ -34,6 +34,8 @@ public class ServerRest {
             HttpServer server = HttpServer.create(new InetSocketAddress(porta), 0);
             
             // Registra gli handler per gli endpoint
+            server.createContext("/api/paridispari/post", new PostHandler());
+            server.createContext("/api/paridispari/get", new GetHandler());
            
             
             // Endpoint di benvenuto

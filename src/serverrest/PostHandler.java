@@ -63,7 +63,7 @@ public class PostHandler implements HttpHandler {
             double risultato = Service.logicaDiCalcolo(request.getGiocata().toLowerCase(), request.getNumero());
 
             // Crea l'oggetto risposta
-            Response response = new Response(risultato);
+            Response response = new Response();
 
             // GSON converte automaticamente l'oggetto Java in JSON
             String jsonRisposta = gson.toJson(response);
