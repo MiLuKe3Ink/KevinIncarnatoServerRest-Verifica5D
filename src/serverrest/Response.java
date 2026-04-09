@@ -1,28 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package serverrest;
 
-/**
- *
- * @author delfo
- */
 public class Response {
 
     private String giocata;
-    private String numero;
+    private int numero;        // corretto da String a int, coerente con gli handler
     private Boolean vittoria;
 
     // Costruttore vuoto necessario per GSON
     public Response() {
     }
 
-    // Costruttore con parametri
-    public Response(String giocata, String numero) {
+    // MODERATO-4: costruttore corretto, vittoria accettato come parametro
+    public Response(String giocata, int numero, boolean vittoria) {
         this.giocata = giocata;
         this.numero = numero;
-        this.vittoria = false;
+        this.vittoria = vittoria;
     }
 
     // Getter
@@ -30,7 +22,7 @@ public class Response {
         return giocata;
     }
 
-    public String getNumero() {
+    public int getNumero() {
         return numero;
     }
 
@@ -43,7 +35,7 @@ public class Response {
         this.giocata = giocata;
     }
 
-    public void setNumero(String numero) {
+    public void setNumero(int numero) {   // corretto da String a int
         this.numero = numero;
     }
 

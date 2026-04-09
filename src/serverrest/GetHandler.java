@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package serverrest;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -16,14 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author delfo
- */
-
 public class GetHandler implements HttpHandler {
 
-    // Istanza Gson configurata per pretty printing
     private final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .create();
@@ -31,32 +20,33 @@ public class GetHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
 
-        // Verifica che sia una richiesta GET
         if (!exchange.getRequestMethod().equalsIgnoreCase("GET")) {
             inviaErrore(exchange, 405, "Metodo non consentito. Usa GET");
             return;
         }
 
         try {
-            // Estrae i parametri dalla query string
             Map<String, String> parametri = estraiParametri(exchange.getRequestURI().getQuery());
 
-            // Validazione parametri
             if (validazioneParametri(parametri)) {
                 inviaErrore(exchange, 400,
                         "Parametri mancanti. Necessari: operando1, operando2, operatore");
                 return;
             }
 
-            // Parsing corretto (usa parametri, non request)
-            String giocata = parametri.get("giocata").toLowerCase();
+            String giocataOriginale = parametri.get("giocata");
             int numero = Integer.parseInt(parametri.get("numero"));
 
-            // Chiamata corretta a Service
-            double response = Service.logicaDiCalcolo(giocata, numero);
+            boolean vittoria = Service.logicaDiCalcolo(
+                    giocataOriginale.toLowerCase(), numero);
 
-            // Conversione in JSON
+            Response response = new Response();
+            response.setGiocata(giocataOriginale);
+            response.setNumero(numero);
+            response.setVittoria(vittoria);
+
             String jsonRisposta = gson.toJson(response);
+            inviaRisposta(exchange, 200, jsonRisposta);
 
         } catch (NumberFormatException e) {
             inviaErrore(exchange, 400, "Operandi non validi. Devono essere numeri");
@@ -67,33 +57,30 @@ public class GetHandler implements HttpHandler {
         }
     }
 
-    // Validazione dei parametri (da implementare)
     private boolean validazioneParametri(Map<String, String> parametri) {
 
         if (!parametri.containsKey("giocata") || !parametri.containsKey("numero")) {
-            return true; // parametri mancanti
+            return true;
         }
 
         String giocata = parametri.get("giocata").toLowerCase();
         if (!giocata.equals("pari") && !giocata.equals("dispari")) {
-            return true; // giocata non valida
+            return true;
         }
 
         try {
             int numero = Integer.parseInt(parametri.get("numero"));
-            if (numero < 1 || numero > 36) {
-                return true; // numero fuori range
+            // MODERATO-1: range corretto da 1-36 a 0-36
+            if (numero < 0 || numero > 36) {
+                return true;
             }
         } catch (NumberFormatException e) {
-            return true; // numero non è un intero
+            return true;
         }
 
-        return false; // tutto ok
+        return false;
     }
 
-    /**
-     * Estrae i parametri dalla query string
-     */
     private Map<String, String> estraiParametri(String query) {
         Map<String, String> parametri = new HashMap<>();
 
@@ -118,9 +105,6 @@ public class GetHandler implements HttpHandler {
         return parametri;
     }
 
-    /**
-     * Invia una risposta di successo
-     */
     private void inviaRisposta(HttpExchange exchange, int codice, String jsonRisposta)
             throws IOException {
 
@@ -135,9 +119,6 @@ public class GetHandler implements HttpHandler {
         os.close();
     }
 
-    /**
-     * Invia una risposta di errore in formato JSON
-     */
     private void inviaErrore(HttpExchange exchange, int codice, String messaggio)
             throws IOException {
 
